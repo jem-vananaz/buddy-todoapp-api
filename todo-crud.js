@@ -23,7 +23,7 @@ const getTodoById = async (req, res) => {
 
 const createTodo = async (req, res) => {
   const todo = new Todo({
-    title: req.body.title,
+    text: req.body.text,
   });
   try {
     const newTodo = await todo.save();
@@ -39,8 +39,8 @@ const updateTodo = async (req, res) => {
     if (!todo) {
       return res.status(404).json({ message: "Todo not found" });
     }
-    if (req.body.title != null) {
-      todo.title = req.body.title;
+    if (req.body.text != null) {
+      todo.text = req.body.text;
     }
     if (req.body.status != null) {
       todo.status = req.body.status;

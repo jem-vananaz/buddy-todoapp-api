@@ -2,12 +2,13 @@ const mongoose = require("mongoose");
 
 const todoSchema = new mongoose.Schema({
   _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
-  title: { type: String, required: true },
+  text: { type: String, required: true },
   status: {
     type: String,
-    default: "inprogress",
-    enum: ["inprogress", "completed", "deleted"],
+    default: "active",
+    enum: ["active", "completed", "deleted"],
   },
+  created_at: { type: Date, default: Date.now },
   deleted: { type: Boolean, default: false },
 });
 
