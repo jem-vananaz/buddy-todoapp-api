@@ -10,6 +10,7 @@ const todoSchema = new mongoose.Schema({
   },
   created_at: { type: Date, default: Date.now },
   deleted: { type: Boolean, default: false },
+  user_id: { type: mongoose.Schema.Types.ObjectId, required: true },
 });
 
 module.exports = mongoose.model("Todo", todoSchema);

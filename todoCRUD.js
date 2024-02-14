@@ -1,9 +1,14 @@
 const Todo = require("./models/Todo");
 
 const createTodo = async (req, res) => {
+  const { text } = req.body;
+  const { userId } = req.user;
+
   const todo = new Todo({
-    text: req.body.text,
+    text,
+    user_id: userId,
   });
+
   try {
     const newTodo = await todo.save();
     res.status(201).json(newTodo);
@@ -13,8 +18,11 @@ const createTodo = async (req, res) => {
 };
 
 const getAllTodos = async (req, res) => {
+  const { userId } = req.user;
+
   try {
     const todos = await Todo.find({
+      user_id: userId,
       status: { $ne: "deleted" },
       deleted: false,
     });
@@ -25,9 +33,12 @@ const getAllTodos = async (req, res) => {
 };
 
 const getTodoById = async (req, res) => {
+  const { userId } = req.user;
+
   try {
     const todo = await Todo.findOne({
       _id: req.params.id,
+      user_id: userId,
       status: { $ne: "deleted" },
       deleted: false,
     });
@@ -41,9 +52,12 @@ const getTodoById = async (req, res) => {
 };
 
 const updateTodo = async (req, res) => {
+  const { userId } = req.user;
+
   try {
     const todo = await Todo.findOne({
       _id: req.params.id,
+      user_id: userId,
       status: { $ne: "deleted" },
       deleted: false,
     });
@@ -64,9 +78,12 @@ const updateTodo = async (req, res) => {
 };
 
 const deleteTodo = async (req, res) => {
+  const { userId } = req.user;
+
   try {
     const todo = await Todo.findOne({
       _id: req.params.id,
+      user_id: userId,
       status: { $ne: "deleted" },
       deleted: false,
     });

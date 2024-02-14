@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const cors = require("cors");
-const todosRouter = require("./todo-crud");
+const routes = require("./routes");
+const authRoutes = require("./auth");
 
 // Middleware to enable CORS
 app.use(cors());
@@ -13,18 +14,11 @@ app.use(express.json());
 // Database setup
 require("./db");
 
-// Routes
-const apiRouter = express.Router();
+// Authentication routes
+app.use("/api/auth", authRoutes);
 
-// Use the '/api' prefix for all routes
-app.use("/api", apiRouter);
-
-// Define routes with the '/api' prefix
-apiRouter.get("/todos", todosRouter.getAllTodos);
-apiRouter.get("/todos/:id", todosRouter.getTodoById);
-apiRouter.post("/todos", todosRouter.createTodo);
-apiRouter.put("/todos/:id", todosRouter.updateTodo);
-apiRouter.delete("/todos/:id", todosRouter.deleteTodo);
+// Main routes
+routes(app);
 
 app.listen(PORT, () => {
   console.log("Server Listening on PORT:", PORT);
