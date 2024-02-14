@@ -54,13 +54,22 @@ const updateTodo = async (req, res) => {
 
 const deleteTodo = async (req, res) => {
   try {
-    const todo = await Todo.findOne({ _id: req.params.id, deleted: false });
+    const todo = await Todo.findOne({
+      _id: req.params.id,
+      status: { $ne: "deleted" },
+      deleted: false,
+    });
     if (!todo) {
       return res.status(404).json({ message: "Todo not found" });
     }
+    todo.status = "deleted";
     todo.deleted = true;
     await todo.save();
-    res.json({ message: "Todo deleted successfully" });
+    res.status(200).json({
+      _id: todo._id,
+      deleted: todo.deleted,
+      message: "Todo deleted successfully",
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
