@@ -1,26 +1,5 @@
 const Todo = require("./models/Todo");
 
-const getAllTodos = async (req, res) => {
-  try {
-    const todos = await Todo.find({ deleted: false });
-    res.json(todos);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-const getTodoById = async (req, res) => {
-  try {
-    const todo = await Todo.findOne({ _id: req.params.id, deleted: false });
-    if (!todo) {
-      return res.status(404).json({ message: "Todo not found" });
-    }
-    res.json(todo);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 const createTodo = async (req, res) => {
   const todo = new Todo({
     text: req.body.text,
@@ -33,9 +12,41 @@ const createTodo = async (req, res) => {
   }
 };
 
+const getAllTodos = async (req, res) => {
+  try {
+    const todos = await Todo.find({
+      status: { $ne: "deleted" },
+      deleted: false,
+    });
+    res.json(todos);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getTodoById = async (req, res) => {
+  try {
+    const todo = await Todo.findOne({
+      _id: req.params.id,
+      status: { $ne: "deleted" },
+      deleted: false,
+    });
+    if (!todo) {
+      return res.status(404).json({ message: "Todo not found" });
+    }
+    res.json(todo);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const updateTodo = async (req, res) => {
   try {
-    const todo = await Todo.findOne({ _id: req.params.id, deleted: false });
+    const todo = await Todo.findOne({
+      _id: req.params.id,
+      status: { $ne: "deleted" },
+      deleted: false,
+    });
     if (!todo) {
       return res.status(404).json({ message: "Todo not found" });
     }
@@ -76,9 +87,9 @@ const deleteTodo = async (req, res) => {
 };
 
 module.exports = {
+  createTodo,
   getAllTodos,
   getTodoById,
-  createTodo,
   updateTodo,
   deleteTodo,
 };
