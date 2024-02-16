@@ -114,13 +114,36 @@ const completeMultiTodos = async (req, res) => {
       {
         _id: { $in: todoIds },
         user_id: userId,
-        status: { $ne: "completed" }, // Update only if status is not already completed
+        status: { $ne: "completed" }, // Update only if status is not yet completed
         deleted: false,
       },
       { status: "completed" }
     );
 
     res.status(200).json({ message: "Todos updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Delete multiple todos
+const deleteMultiTodos = async (req, res) => {
+  const { todoIds } = req.body;
+  const { userId } = req.user;
+
+  try {
+    // Update status of all todos with the provided _ids and belonging to the user
+    await Todo.updateMany(
+      {
+        _id: { $in: todoIds },
+        user_id: userId,
+        status: { $ne: "deleted" }, // Update only if status is not yet deleted
+        deleted: false,
+      },
+      { status: "deleted", deleted: true }
+    );
+
+    res.status(200).json({ message: "Todos deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -133,4 +156,5 @@ module.exports = {
   updateTodo,
   deleteTodo,
   completeMultiTodos,
+  deleteMultiTodos,
 };
